@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      flex-wrap: wrap;
+      height: 100vh; /* Make the body take up the full height of the viewport */
+    }
+
+    .pixel {
+      box-sizing: border-box;
+      width: calc(100% / 20); /* Divide the total width into 20 columns */
+      height: calc(100vh / 20); /* Divide the viewport height into 20 rows */
+      background-color: lightgray;
+      transition: background-color 0.3s ease-in-out;
+    }
+
+    #instructions {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 20px;
+      text-align: center;
+      color: white;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div id="instructions">
+    <p>Left-click to start coloring the squares</p>
+    <p>Hover over a square to change its color</p>
+    <p>Right-click to clear and start over</p>
+  </div>
+
+  <script>
+    let isDrawing = false;
+
+    function getRandomColor() {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+
+    function startDrawing() {
+      isDrawing = true;
+      const instructions = document.getElementById('instructions');
+      instructions.style.display = 'none';
+    }
+
+    function changeColor(event) {
+      if (isDrawing) {
+        const pixel = event.target;
+        pixel.style.backgroundColor = getRandomColor();
+      }
+    }
+
+    function clearScreen(event) {
+      event.preventDefault(); // Prevent the default right-click menu
+      const pixels = document.querySelectorAll('.pixel');
+      pixels.forEach(pixel => {
+        pixel.style.backgroundColor = 'lightgray';
+      });
+    }
+
+    // Create a grid of pixels
+    const gridSize = 20;
+
+    for (let i = 0; i < gridSize * gridSize; i++) {
+      const pixel = document.createElement('div');
+      pixel.className = 'pixel';
+      pixel.addEventListener('mouseover', changeColor);
+      document.body.appendChild(pixel);
+    }
+
+    // Add event listener for left-click to start drawing
+    document.body.addEventListener('click', startDrawing);
+
+    // Add event listener for right-click to clear the screen
+    document.body.addEventListener('contextmenu', clearScreen);
+  </script>
+</body>
+</html>
